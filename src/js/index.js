@@ -1,6 +1,10 @@
 $(document).ready(function() {
-    
+
     var gallery = $("#gallery");
+    var statusArea = $("#status");
+
+    var imgWidth = 300;
+    var imgHeight = 250;
 
     var datas = {};
     var option = {};
@@ -11,9 +15,11 @@ $(document).ready(function() {
     option.success = function(data, textStatus, xhr) {
 
         datas = data.imgs;
+        galleryMaker(datas, imgWidth, imgHeight);
 
-        galleyMaker(datas);
-
+        $(window).on("resize", function() {
+            galleryMaker(datas, imgWidth, imgHeight);
+        })
     }
     option.error = function(jqXHR, textStatus, errorThrown) {
 
@@ -24,36 +30,46 @@ $(document).ready(function() {
     }
 
     $.ajax(option);
-    
-    function galleyMaker(datas) {
-    
-        for(var i = 0; i < datas.length; i++) {
-            var ele = $("<li id=imgSrc"+i+"></li>");
+
+    function galleryMaker(datas, imgWidth, imgHeight) {
+        var areaWidth = $("#wrap").width();
+        var dataLength = datas.length;
+        var horizonItem = Math.floor(areaWidth / imgWidth);
+        var verticalItem = Math.ceil(dataLength / horizonItem);
+        var spaceRemain = (areaWidth - (imgWidth * horizonItem)) - 20;
+        var spacing = spaceRemain / horizonItem + 1;
+
+        var liftPosition = imgWidth;
+        var topPosition = spacing;
+
+        console.log("갯수 : " + dataLength + "  가로 :" + horizonItem + " 세로 : " + verticalItem + " 여백" + spacing);
+
+        for (var i = 0; i < dataLength; i++) {
+            var ele = $("<li id=imgSrc" + i + "></li>");
             gallery.append(ele);
-            $("#imgSrc"+i).css(
-                {
-                    "backgroundImage":"url("+datas[i].location+")", 
-                    "backgroundRepeat":"no-repeat", 
-                    "backgroundSize":"cover", 
-                    "backgroundPosition":"center"
-                }
-            );
         }
-    
+
+        for (var i = 0; i < dataLength; i++) {
+
+            var numbering = i % horizonItem;
+            liftPosition = (imgWidth * numbering) + (spacing * (numbering + 1));
+
+            if (0 == numbering && 0 < i) {
+                topPosition = topPosition + imgHeight + spacing;
+            }
+            $("#imgSrc" + i).css({
+                "width": imgWidth + "px",
+                "height": imgHeight + "px",
+                "left": liftPosition + "px",
+                "top": topPosition + "px",
+                "backgroundImage": "url(" + datas[i].location + ")",
+                "backgroundRepeat": "no-repeat",
+                "backgroundSize": "cover",
+                "backgroundPosition": "center",
+                "position": "absolute"
+            });
+            console.log(numbering + " " + liftPosition + " " + horizonItem + " " + verticalItem + " " + topPosition);
+        }
+
     }
-
-    var statusArea = $("#status");
-    $(window).on("resize", function() {
-        
-        var winWidth = $(window).width();
-
-        // statusArea.text("가능한 박스 겟수 : " + Math.floor(winWidth/300));
-        statusArea.text( winWidth - (300 * Math.floor(winWidth/300)) + (5 * (Math.floor(winWidth/300)-1))/2 );
-
-        for(var i = 0; i < datas.length; i++) {
-            $("#imgSrc"+i).css({"left":300*i});
-        }
-
-    });
-
 });
