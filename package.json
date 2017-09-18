@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-serve -c-1 -p 3500"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/paranoimin/gallery_prac#readme",
   "dependencies": {
+    "http-server": "^0.10.0",
     "jquery": "^3.2.1",
     "underscore": "^1.8.3"
   }

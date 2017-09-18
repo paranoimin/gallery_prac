@@ -1,0 +1,12 @@
+*, body {
+    margin: 0;
+    padding: 0;
+}
+div, header, section, footer {
+    display: block;
+    margin: 0;
+    padding: l 0;
+}
+li {
+    list-style-type: none;
+}
